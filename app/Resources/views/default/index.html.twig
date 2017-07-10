@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {#{{ dump(translateAbleData) }}#}
+    {#{{ dump(dataWithoutTranslation) }}#}
+    {#{{ dump(totalLocale) }}#}
+
+{% for translation in translateAbleData  %}
+    {% if selecedLocale == '' %}
+    {% if translation.en is not null %}
+    <h1>
+        {{ translation.en.title }}
+    </h1>
+    <p>
+        {{ translation.en.description }}
+    </p>
+    {% endif %}
+{% else %}
+    {% if translation[selecedLocale] is not null %}
+        <h1>
+            {{ translation[selecedLocale].title }}
+        </h1>
+        <p>
+            {{ translation[selecedLocale].description }}
+        </p>
+    {% endif %}
+{% endif %}
+{% endfor %}
+    <form id="languageForm" method="post" action={{ path('language') }}>
+        <select name="languageDropDown" id="languageChanges">
+            {% for locale in totalLocale  %}
+
+                <option
+                        {% if locale == selecedLocale %}selected{% endif %}
+                        value="{{ locale }}">{{ locale }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script>
+        $(document).ready(function () {
+//            alert('test');
+           $("#languageChanges").on('change',function () {
+                $('#languageForm').submit();
+           }) ;
+        });
+    </script>
+{% endblock %}
